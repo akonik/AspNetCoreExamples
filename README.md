@@ -1,2 +1,2 @@
 # AspNetCoreExamples
-123
+Examples for asp.net core.

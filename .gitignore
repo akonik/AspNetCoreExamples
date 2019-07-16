@@ -1,0 +1,13 @@
+/.vs/AspNetCoreExamples/DesignTimeBuild/.dtbcache
+/.vs/AspNetCoreExamples/config/applicationhost.config
+/.vs/AspNetCoreExamples/v16/.suo
+/.vs/AspNetCoreExamples/v16/Server/sqlite3/db.lock
+/.vs/AspNetCoreExamples/v16/Server/sqlite3/storage.ide
+/.vs/AspNetCoreJwt/DesignTimeBuild/.dtbcache
+/AspNetCoreJwt/obj
+/AspNetCoreExamples.Models/obj
+/ApplicationDbContext/obj
+/AspNetCoreExamples.Services/obj
+/AspNetCoreExamples.ViewModels/obj
+/.vs/AspNetCoreExamples/v15/Server/sqlite3
+/AspNetCoreJwt/*.user

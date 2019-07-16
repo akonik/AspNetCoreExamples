@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="2.2.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ApplicationDbContext\AspNetCoreExamples.EntityFramework.csproj" />
+    <ProjectReference Include="..\AspNetCoreExamples.Models\AspNetCoreExamples.Models.csproj" />
+    <ProjectReference Include="..\AspNetCoreExamples.Services\AspNetCoreExamples.Services.csproj" />
+    <ProjectReference Include="..\AspNetCoreExamples.ViewModels\AspNetCoreExamples.ViewModels.csproj" />
+  </ItemGroup>
+
+</Project>
