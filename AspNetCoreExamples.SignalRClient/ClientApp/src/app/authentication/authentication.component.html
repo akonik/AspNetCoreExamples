@@ -1,0 +1,30 @@
+<div class="form-group">
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+        <h2 class="login-page__login-title text-center">Login</h2>
+        <label for="a1" class="label-block">Username
+            <input class="form-control" formControlName="login" id="a1" type="text" />
+            <div *ngIf="submitted && f.login.errors" class="error">
+                <div *ngIf="f.login.errors.required">Login is required</div>
+            </div>
+        </label>
+        <label for="a2" class="label-block">Password
+            <input class="form-control" formControlName="password" id="a2" type="password" />
+            <div *ngIf="submitted && f.password.errors" class="error">
+                <div *ngIf="f.password.errors.required">Password is required</div>
+            </div>
+        </label>
+        <label>
+            <div *ngIf="errorMessage" class="error">
+                <div>{{errorMessage}}</div>
+            </div>
+        </label>
+        <div class="login">
+            <label>
+                <button ng-disabled="f.login.$invalid" type="submit" class="btn btn-primary">Login</button>
+            </label>
+            <label>
+                <a class="login-page__login-link" routerLink="/create-account">Create account</a>
+            </label>
+        </div>
+    </form>
+</div>

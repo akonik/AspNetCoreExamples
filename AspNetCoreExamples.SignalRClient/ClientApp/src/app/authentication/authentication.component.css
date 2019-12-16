@@ -1,0 +1,19 @@
+.error input{
+    border-color: red;
+}
+
+.error {
+    color : red;
+}
+
+.label-block{
+    display: block !important;
+}
+
+label{
+    display: block !important;
+}
+
+.login{
+    text-align: center;
+}

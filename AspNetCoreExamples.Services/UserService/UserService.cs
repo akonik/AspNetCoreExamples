@@ -53,7 +53,8 @@ namespace AspNetCoreExamples.Services.UserService
                     Subject = new ClaimsIdentity(new Claim[]
                     {
                     new Claim(ClaimTypes.Name, user.Email),
-                    new Claim(ClaimTypes.NameIdentifier, user.Id.ToString())
+                    new Claim(ClaimTypes.NameIdentifier, user.Email),
+                    new Claim("id",user.Id.ToString())
                     }),
                     Expires = DateTime.UtcNow.AddMinutes(_settigns.TokenLifeTimeInMunutes),
                     SigningCredentials = new SigningCredentials(

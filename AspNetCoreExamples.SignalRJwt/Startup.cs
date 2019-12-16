@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Cors.Internal;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -39,10 +40,23 @@ namespace AspNetCoreExamples.SignalRJwt
         {
             services.AddDbContext<ApplicationDbContext>(context =>
             {
-                context.UseInMemoryDatabase("ApplicationDbContext");
+                context.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
             });
 
+            services.AddCors(o => o.AddPolicy("MyPolicy", builder =>
+            {
+                builder.AllowAnyOrigin()
+                       .AllowAnyMethod()
+                       .AllowAnyHeader();
+            }));
+
+            // Add framework services.
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+
+            services.Configure<MvcOptions>(options =>
+            {
+                options.Filters.Add(new CorsAuthorizationFilterFactory("MyPolicy"));
+            });
 
             // configure strongly typed settings objects
             var appSettingsSection = Configuration.GetSection("AppSettings");
@@ -67,6 +81,19 @@ namespace AspNetCoreExamples.SignalRJwt
                     ValidateIssuer = false,
                     ValidateAudience = false
                 };
+                x.Events = new JwtBearerEvents
+                {
+                    OnMessageReceived = context =>
+                    {
+                        var signalRTokenHeader = context.Request.Query["access_token"];
+
+                        if (!string.IsNullOrEmpty(signalRTokenHeader))
+                        {
+                            context.Token = signalRTokenHeader;
+                        }
+                        return Task.CompletedTask;
+                    }
+                };
             });
 
 
@@ -76,6 +103,8 @@ namespace AspNetCoreExamples.SignalRJwt
             services.AddSingleton<IUserTrackerService, UserTrackerService>();
             services.AddSingleton(typeof(HubLifetimeManager<ChatHub>), typeof(DefaultPresenceHublifetimeManager<ChatHub>));
             services.AddSingleton(typeof(DefaultHubLifetimeManager<ChatHub>), typeof(DefaultHubLifetimeManager<ChatHub>));
+
+            services.AddSignalR();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -90,13 +119,23 @@ namespace AspNetCoreExamples.SignalRJwt
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
-
+            app.UseCors(builder =>
+            {
+                builder.WithOrigins("http://localhost:27657")
+                    .AllowAnyHeader()
+                    .WithMethods("GET", "POST")
+                    .AllowCredentials();
+            });
             app.UseSignalR(routes =>
             {
                 routes.MapHub<ChatHub>("/chat");
             });
+            app.UseMvc(routes =>
+            {
+                routes.MapRoute("default", "{controller=Home}/{action=Index}/{id?}");
+            });
             app.UseHttpsRedirection();
-            app.UseMvc();
+            
         }
     }
 }

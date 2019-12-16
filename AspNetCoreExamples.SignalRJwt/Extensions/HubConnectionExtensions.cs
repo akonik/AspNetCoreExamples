@@ -11,13 +11,13 @@ namespace AspNetCoreExamples.SignalRJwt.Extensions
     {
         public static int? UserId(this HubConnectionContext context)
         {
-            var sub = context.GetHttpContext().User?.Claims?.SingleOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
+            var sub = context.GetHttpContext().User?.Claims?.SingleOrDefault(x => x.Type == "id")?.Value;
             return !string.IsNullOrEmpty(sub) ? new int?(int.Parse(sub)) : null;
         }
 
         public static string UserName(this HubConnectionContext context)
         {
-            return context.User.Claims.SingleOrDefault(x => x.Type == ClaimTypes.Name).Value;
+            return context.User.Claims.SingleOrDefault(x => x.Type == ClaimTypes.NameIdentifier).Value;
         }
     }
 }

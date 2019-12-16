@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Cors.Internal;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -30,10 +31,10 @@ namespace AspNetCoreExamples.Jwt
         {
             services.AddDbContext<ApplicationDbContext>(context =>
             {
-                context.UseInMemoryDatabase("ApplicationDbContext");
+                context.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
             });
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            
 
             //configura identity.
             services.AddIdentity<ApplicationUser, IdentityRole<int>>(config =>
@@ -83,7 +84,23 @@ namespace AspNetCoreExamples.Jwt
             });
 
             services.AddScoped<IUserService, UserService>();
-           
+
+            services.AddCors(o => o.AddPolicy("MyPolicy", builder =>
+            {
+                builder.AllowAnyOrigin()
+                       .AllowAnyMethod()
+                       .AllowAnyHeader();
+            }));
+
+            // Add framework services.
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+
+            services.Configure<MvcOptions>(options =>
+            {
+                options.Filters.Add(new CorsAuthorizationFilterFactory("MyPolicy"));
+            });
+
+            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -98,18 +115,11 @@ namespace AspNetCoreExamples.Jwt
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
-
-            app.UseMvc();
-
-            app.UseHttpsRedirection();
-
-            app.UseCors(x => x
-                .AllowAnyOrigin()
-                .AllowAnyMethod()
-                .AllowAnyHeader());
+            // Enable Cors
+            app.UseCors("MyPolicy");
 
             app.UseAuthentication();
-            app.UseHttpsRedirection();
+            app.UseMvc();
         }
     }
 }

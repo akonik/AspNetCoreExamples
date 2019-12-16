@@ -3,13 +3,14 @@ using AspNetCoreExamples.ViewModels.Account;
 using AspNetCoreExamples.ViewModels.Token;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using System.IdentityModel.Tokens.Jwt;
 using System.Threading.Tasks;
 
 namespace AspNetCoreExamples.Jwt.Controllers
 {
-    [ApiController]
+   
     [Route("api/account")]
     public class AccountController : ApiControllerBase
     {
@@ -54,10 +55,13 @@ namespace AspNetCoreExamples.Jwt.Controllers
             return BadRequest();
         }
 
-        [HttpPost("token")]
+        
+        [HttpPost()]
+        [Route("login")]
         [Produces("application/json")]
         public async Task<IActionResult> Login([FromBody]LoginViewModel model)
         {
+            
             var token = await _userService.JwtLogin(model.Email, model.Password);
 
             if (token != null)

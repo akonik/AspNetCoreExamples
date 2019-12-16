@@ -26,6 +26,7 @@ namespace AspNetCoreExamples.SignalRJwt.Services.UserTracker
         public Task RemoveUser(HubConnectionContext connection)
         {
             _connectedUsers.Remove(connection, out var details);
+            UserLeft(details);
             return Task.CompletedTask;
         }
 
